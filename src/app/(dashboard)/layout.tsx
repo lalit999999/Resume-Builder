@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { auth } from "@clerk/nextjs/server"
 import {
   Sidebar,
   SidebarContent,
@@ -27,11 +28,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  await auth.protect()
+
   return (
     <TooltipProvider delayDuration={0}>
       <SidebarProvider>
