@@ -1,0 +1,5 @@
+{
+  "id": "nitp",
+  "name": "NITP Classic",
+  "sections": ["header", "education", "experience", "projects", "skills", "certifications", "positions"]
+}

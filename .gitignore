@@ -45,3 +45,4 @@ extra.txt
 # clerk configuration (can include secrets)
 /.clerk/
 data/
+compile-service/node_modules/
