@@ -1,0 +1,290 @@
+\documentclass[a4paper,11pt]{article}
+
+% Package imports
+
+\usepackage{fontawesome5} % Add this to your main preamble if not already present
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{ragged2e}
+\usepackage[empty]{fullpage}
+\usepackage{wrapfig}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage{marvosym}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{cfr-lm}
+\usepackage[T1]{fontenc}
+\usepackage{fontawesome5}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\usepackage{tabularx} % Required for tables that stretch to page width
+\usepackage{array} % Required for vertical centering in tables
+% Color definitions
+\definecolor{darkblue}{RGB}{0,0,139}
+
+% Page layout
+\geometry{
+left=1cm,
+right=1cm,
+top=0.5cm,
+bottom=0.5cm
+}
+\setlength{\multicolsep}{0pt}
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\footskip}{4.08pt}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=black,
+}
+
+% Custom box settings
+\usepackage[most]{tcolorbox}
+\tcbset{
+    frame code={},
+    center title,
+    left=0pt,
+    right=0pt,
+    top=0pt,
+    bottom=0pt,
+    colback=gray!20,
+    colframe=white,
+    width=\dimexpr\textwidth\relax,
+    enlarge left by=-2mm,
+    boxsep=4pt,
+    arc=0pt,outer arc=0pt,
+}
+
+% URL style
+\urlstyle{same}
+
+% Text alignment
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Section formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-7pt}]
+
+% Custom commands
+\newcommand{\resumeItem}[2]{
+  \item{
+    \textbf{#1}{\hspace{0.5mm}#2 \vspace{-0.5mm}}
+  }
+}
+
+\newcommand{\resumePOR}[3]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1}\hspace{0.3mm}#2 & \textit{\small{#3}}
+    \end{tabular*}
+    \vspace{-2mm}
+}
+
+\newcommand{\resumeSubheading}[4]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & \textit{\footnotesize{#4}} \\
+        \textit{\footnotesize{#3}} &  \footnotesize{#2}\\
+    \end{tabular*}
+    \vspace{-2.4mm}
+}
+
+\newcommand{\resumeProject}[4]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & \textit{\footnotesize{#3}} \\
+        \footnotesize{\textit{#2}} & \footnotesize{#4}
+    \end{tabular*}
+    \vspace{-2.4mm}
+}
+
+\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
+
+\renewcommand{\labelitemi}{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\renewcommand{\labelitemii}{$\vcenter{\hbox{\tiny$\circ$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*,labelsep=1mm]}
+\newcommand{\resumeHeadingSkillStart}{\begin{itemize}[leftmargin=*,itemsep=1.7mm, rightmargin=2ex]}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=*,labelsep=1mm,itemsep=0.5mm]}
+
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}\vspace{2mm}}
+\newcommand{\resumeHeadingSkillEnd}{\end{itemize}\vspace{-2mm}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-2mm}}
+\newcommand{\cvsection}[1]{%
+\vspace{2mm}
+\begin{tcolorbox}
+    \textbf{\large #1}
+\end{tcolorbox}
+    \vspace{-4mm}
+}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}%
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}%
+\newcolumntype{C}{>{\centering\arraybackslash}X}%
+
+% Commands for icon sizing and positioning
+\newcommand{\socialicon}[1]{\raisebox{-0.05em}{\resizebox{!}{1em}{#1}}}
+\newcommand{\ieeeicon}[1]{\raisebox{-0.3em}{\resizebox{!}{1.3em}{#1}}}
+
+% Font options
+\newcommand{\headerfonti}{\fontfamily{phv}\selectfont} % Helvetica-like (similar to Arial/Calibri)
+\newcommand{\headerfontii}{\fontfamily{ptm}\selectfont} % Times-like (similar to Times New Roman)
+\newcommand{\headerfontiii}{\fontfamily{ppl}\selectfont} % Palatino (elegant serif)
+\newcommand{\headerfontiv}{\fontfamily{pbk}\selectfont} % Bookman (readable serif)
+\newcommand{\headerfontv}{\fontfamily{pag}\selectfont} % Avant Garde-like (similar to Trebuchet MS)
+\newcommand{\headerfontvi}{\fontfamily{cmss}\selectfont} % Computer Modern Sans Serif
+\newcommand{\headerfontvii}{\fontfamily{qhv}\selectfont} % Quasi-Helvetica (another Arial/Calibri alternative)
+\newcommand{\headerfontviii}{\fontfamily{qpl}\selectfont} % Quasi-Palatino (another elegant serif option)
+\newcommand{\headerfontix}{\fontfamily{qtm}\selectfont} % Quasi-Times (another Times New Roman alternative)
+\newcommand{\headerfontx}{\fontfamily{bch}\selectfont} % Charter (clean serif font)
+
+\begin{document}
+\fontfamily{cmr}\selectfont
+
+%----------HEADING-----------------
+
+\begin{tabularx}{\textwidth}{X r}
+{\Huge \textbf{<< header.name | texescape >>}} &
+\faPhone* \ << header.phone | texescape >> \\
+
+<< header.course | texescape >> &
+\href{mailto:<< header.email | texescape >>}{\faEnvelope \ << header.email | texescape >>} \\
+
+<< header.department | texescape >> &
+<% if header.linkedin %>\href{https://www.linkedin.com/in/<< header.linkedin | texescape >>}{\faLinkedin \ LinkedIn}<% endif %> \\
+
+<< header.institute | texescape >> &
+<% if header.github %>\href{https://github.com/<< header.github | texescape >>}{\faGithub \ GitHub}<% endif %> \\
+
+<< header.location | texescape >> &
+<% if header.website %>\href{<< header.website | texescape >>}{\faGlobe \ Portfolio}<% endif %> \\
+\end{tabularx}
+
+
+%-----------------EDUCATION-----------------------
+
+\section{\textbf{Education}}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}X|>{\centering\arraybackslash}p{7cm}|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{2cm}|}
+  \hline
+  \textbf{Degree/Certificate} & \textbf{Institute/Board} & \textbf{CGPA} & \textbf{Year} \\
+  \hline
+<% for edu in education %>
+  << edu.degree | texescape >> & << edu.institute | texescape >> & << edu.cgpa | texescape >> & << edu.year | texescape >> \\
+  \hline
+<% endfor %>
+\end{tabularx}
+\vspace{-4mm}
+
+<#
+  Experience is not rendered in this template yet. To enable it, remove this
+  comment block and un-comment the LaTeX below, which is already wired to the
+  `experience` loop.
+
+% \section{\textbf{Experience}}
+% \vspace{-0.4mm}
+% \resumeSubHeadingListStart
+% <% for exp in experience %>
+% \resumeSubheading
+%     {<< exp.company | texescape >><% if exp.companyLink %> [\href{<< exp.companyLink | texescape >>}{\faIcon{globe}}]<% endif %>}{<< exp.location | texescape >>}
+%     {<< exp.title | texescape >>}{<< exp.duration | texescape >>}
+%     \resumeItemListStart
+%     <% for bullet in exp.bullets %>
+%       \item << bullet | texescape >>
+%     <% endfor %>
+%     \resumeItemListEnd
+% <% endfor %>
+% \resumeSubHeadingListEnd
+% \vspace{-6mm}
+#>
+\section{\textbf{Projects}}
+\vspace{-0.4mm}
+\resumeSubHeadingListStart
+
+<% for p in projects %>
+\resumeProject
+    {<< p.name | texescape >> }
+    {Tech Stack: << p.techStack | texescape >>}
+    {}
+    {{}[<% if p.githubLink %>\href{<< p.githubLink | texescape >>}{\textcolor{black}{\faGithub}}<% endif %><% if p.githubLink and p.demoLink %> \ <% endif %><% if p.demoLink %>\href{<< p.demoLink | texescape >>}{\textcolor{black}{\faExternalLink*}}<% endif %>]}
+\resumeItemListStart
+<% for bullet in p.bullets %>
+    \item << bullet | texescape >>
+<% endfor %>
+\resumeItemListEnd
+
+<% endfor %>
+\resumeSubHeadingListEnd
+\vspace{-8mm}
+
+
+\section{\textbf{Skills}}
+
+\vspace{-0.4mm}
+\resumeHeadingSkillStart
+
+<% for s in skills %>
+\resumeSubItem{<< s.category | texescape >> : }{<< s.items | join(", ") | texescape >>}
+<% endfor %>
+\resumeHeadingSkillEnd
+
+
+
+\section{\textbf{Certifications}}
+\vspace{-0.4mm}
+\resumeSubHeadingListStart
+<% for c in certifications %>
+\resumePOR
+    {<< c.issuer | texescape >>}
+    {, <% if c.link %>\href{<< c.link | texescape >>}{<< c.title | texescape >>}<% else %><< c.title | texescape >><% endif %>} % Issuer
+    { << c.date | texescape >> } % Duration
+<% endfor %>
+\resumeSubHeadingListEnd
+
+\vspace{-6mm}
+
+%-----------ACHIEVEMENTS-----------------
+<#
+  Achievements are not rendered in this template yet. To enable it, remove
+  this comment block, un-comment the LaTeX below, and add an `achievements`
+  array to ResumeData (title, link).
+
+% \section{\textbf{Achievements}}
+% \vspace{-0.2mm}
+% \resumeSubHeadingListStart
+% <% for a in achievements %>
+% \resumePOR{}{<% if a.link %>\href{<< a.link | texescape >>}{ << a.title | texescape >> }<% else %> << a.title | texescape >> <% endif %>}{}
+% <% endfor %>
+% \resumeSubHeadingListEnd
+% \vspace{-6mm}
+#>
+
+\section{\textbf{Positions of Responsibility}}
+\vspace{-0.4mm}
+\resumeSubHeadingListStart
+<% for pos in positions %>
+    \resumePOR{<% if pos.titleLink %>\href{<< pos.titleLink | texescape >>}{ << pos.title | texescape >> }<% else %> << pos.title | texescape >> <% endif %>, } % Position
+    {<< pos.organization | texescape >>} %Club,Event
+    {<< pos.duration | texescape >>} %Tenure Period
+<% endfor %>
+\resumeSubHeadingListEnd
+\vspace{-5mm}
+
+
+\end{document}

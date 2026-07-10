@@ -121,83 +121,76 @@ export const mockActivity: ActivityPoint[] = [
   { date: "Jul", resumesCreated: 1, downloads: 3 },
 ]
 
-export const mockResumeData: ResumeData = {
+export const mockResumeData: ResumeRecord = {
   id: "res_1",
   title: "Frontend Engineer — Google",
-  templateId: "tpl_atlas",
+  templateId: "nitp",
   status: "compiled",
-  personalInfo: {
-    fullName: "Aditi Sharma",
-    email: "aditi.sharma@example.com",
-    phone: "+91 98765 43210",
-    location: "Bengaluru, India",
-    website: "aditisharma.dev",
-    linkedin: "linkedin.com/in/aditisharma",
-    github: "github.com/aditisharma",
-    summary:
-      "Frontend engineer with 4 years of experience building performant, accessible React applications used by millions of users.",
+  data: {
+    header: {
+      name: "Aditi Sharma",
+      course: "Bachelor of Technology",
+      department: "Computer Science and Engineering",
+      institute: "Indian Institute of Technology, Bombay",
+      location: "Bengaluru, India",
+      phone: "+91 98765 43210",
+      email: "aditi.sharma@example.com",
+      website: "https://aditisharma.dev",
+      linkedin: "aditisharma",
+      github: "aditisharma",
+    },
+    education: [
+      {
+        degree: "B.Tech",
+        institute: "Indian Institute of Technology, Bombay",
+        cgpa: "8.9/10",
+        year: "2018-22",
+      },
+    ],
+    experience: [
+      {
+        company: "Razorpay",
+        companyLink: "https://razorpay.com",
+        location: "Bengaluru, India",
+        title: "Senior Frontend Engineer",
+        duration: "March 2024 - present",
+        bullets: [
+          "Led migration of the merchant dashboard to React Server Components, cutting TTI by 38%.",
+          "Built a reusable design system adopted across 6 internal product teams.",
+          "Mentored 3 junior engineers through structured pairing and code review.",
+        ],
+      },
+      {
+        company: "Swiggy",
+        location: "Bengaluru, India",
+        title: "Frontend Engineer",
+        duration: "June 2022 - February 2024",
+        bullets: [
+          "Shipped the restaurant partner onboarding flow, reducing drop-off by 22%.",
+          "Introduced automated visual regression testing across the web app.",
+        ],
+      },
+    ],
+    projects: [
+      {
+        name: "OpenResume",
+        techStack: "Next.js, TypeScript, LaTeX",
+        githubLink: "https://github.com/aditisharma/openresume",
+        bullets: ["Open-source LaTeX resume generator with live preview."],
+      },
+    ],
+    skills: [
+      { category: "Languages", items: ["TypeScript", "JavaScript", "Python"] },
+      { category: "Frameworks", items: ["React", "Next.js", "Node.js"] },
+      { category: "Tools", items: ["Docker", "PostgreSQL", "Figma"] },
+    ],
+    certifications: [
+      { issuer: "React India", title: "Speaker, React India 2025", date: "2025" },
+    ],
+    positions: [
+      { title: "Winner", organization: "Razorpay Internal Hackathon", duration: "2024" },
+    ],
   },
-  education: [
-    {
-      id: "edu_1",
-      institution: "Indian Institute of Technology, Bombay",
-      degree: "B.Tech",
-      fieldOfStudy: "Computer Science",
-      startDate: "2018-08",
-      endDate: "2022-05",
-      gpa: "8.9/10",
-      description: "Relevant coursework: Data Structures, Distributed Systems, HCI.",
-    },
-  ],
-  experience: [
-    {
-      id: "exp_1",
-      company: "Razorpay",
-      role: "Senior Frontend Engineer",
-      location: "Bengaluru, India",
-      startDate: "2024-03",
-      endDate: "",
-      current: true,
-      bullets: [
-        "Led migration of the merchant dashboard to React Server Components, cutting TTI by 38%.",
-        "Built a reusable design system adopted across 6 internal product teams.",
-        "Mentored 3 junior engineers through structured pairing and code review.",
-      ],
-    },
-    {
-      id: "exp_2",
-      company: "Swiggy",
-      role: "Frontend Engineer",
-      location: "Bengaluru, India",
-      startDate: "2022-06",
-      endDate: "2024-02",
-      current: false,
-      bullets: [
-        "Shipped the restaurant partner onboarding flow, reducing drop-off by 22%.",
-        "Introduced automated visual regression testing across the web app.",
-      ],
-    },
-  ],
-  projects: [
-    {
-      id: "proj_1",
-      name: "OpenResume",
-      description: "Open-source LaTeX resume generator with live preview.",
-      technologies: ["Next.js", "TypeScript", "LaTeX"],
-      link: "github.com/aditisharma/openresume",
-      startDate: "2025-01",
-      endDate: "2025-04",
-    },
-  ],
-  skills: [
-    { id: "sk_1", category: "Languages", items: ["TypeScript", "JavaScript", "Python"] },
-    { id: "sk_2", category: "Frameworks", items: ["React", "Next.js", "Node.js"] },
-    { id: "sk_3", category: "Tools", items: ["Docker", "PostgreSQL", "Figma"] },
-  ],
-  achievements: [
-    { id: "ach_1", title: "Speaker, React India 2025", description: "Talk on Server Components performance." },
-    { id: "ach_2", title: "Winner, Razorpay Internal Hackathon 2024" },
-  ],
   createdAt: "2026-05-01T10:00:00.000Z",
   updatedAt: "2026-07-08T09:24:00.000Z",
   downloadCount: 5,

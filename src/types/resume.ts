@@ -60,12 +60,12 @@ export const positionEntrySchema = z.object({
 
 export const ResumeDataSchema = z.object({
   header: headerSchema,
-  education: z.array(educationEntrySchema).default([]),
-  experience: z.array(experienceEntrySchema).default([]),
-  projects: z.array(projectEntrySchema).default([]),
-  skills: z.array(skillGroupSchema).default([]),
-  certifications: z.array(certificationEntrySchema).default([]),
-  positions: z.array(positionEntrySchema).default([]),
+  education: z.array(educationEntrySchema),
+  experience: z.array(experienceEntrySchema),
+  projects: z.array(projectEntrySchema),
+  skills: z.array(skillGroupSchema),
+  certifications: z.array(certificationEntrySchema),
+  positions: z.array(positionEntrySchema),
 })
 
 export type Header = z.infer<typeof headerSchema>
@@ -76,6 +76,24 @@ export type SkillGroup = z.infer<typeof skillGroupSchema>
 export type CertificationEntry = z.infer<typeof certificationEntrySchema>
 export type PositionEntry = z.infer<typeof positionEntrySchema>
 export type ResumeData = z.infer<typeof ResumeDataSchema>
+
+export const emptyResumeData: ResumeData = {
+  header: {
+    name: "",
+    course: "",
+    department: "",
+    institute: "",
+    location: "",
+    phone: "",
+    email: "",
+  },
+  education: [],
+  experience: [],
+  projects: [],
+  skills: [],
+  certifications: [],
+  positions: [],
+}
 
 // ---- Whole-resume record shape used by the frontend (not persisted directly) ----
 

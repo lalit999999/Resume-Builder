@@ -1,0 +1,335 @@
+\documentclass[a4paper,11pt]{article}
+
+% Package imports
+
+\usepackage{fontawesome5} % Add this to your main preamble if not already present
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{ragged2e}
+\usepackage[empty]{fullpage}
+\usepackage{wrapfig}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage{marvosym}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{cfr-lm}
+\usepackage[T1]{fontenc}
+\usepackage{fontawesome5}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\usepackage{tabularx} % Required for tables that stretch to page width
+\usepackage{array} % Required for vertical centering in tables
+% Color definitions
+\definecolor{darkblue}{RGB}{0,0,139}
+
+% Page layout
+\geometry{
+left=1cm,
+right=1cm,
+top=0.5cm,
+bottom=0.5cm
+}
+\setlength{\multicolsep}{0pt} 
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\footskip}{4.08pt}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=black,
+}
+
+% Custom box settings
+\usepackage[most]{tcolorbox}
+\tcbset{
+    frame code={},
+    center title,
+    left=0pt,
+    right=0pt,
+    top=0pt,
+    bottom=0pt,
+    colback=gray!20,
+    colframe=white,
+    width=\dimexpr\textwidth\relax,
+    enlarge left by=-2mm,
+    boxsep=4pt,
+    arc=0pt,outer arc=0pt,
+}
+
+% URL style
+\urlstyle{same}
+
+% Text alignment
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Section formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-7pt}]
+
+% Custom commands
+\newcommand{\resumeItem}[2]{
+  \item{
+    \textbf{#1}{\hspace{0.5mm}#2 \vspace{-0.5mm}}
+  }
+}
+
+\newcommand{\resumePOR}[3]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1}\hspace{0.3mm}#2 & \textit{\small{#3}} 
+    \end{tabular*}
+    \vspace{-2mm}
+}
+
+\newcommand{\resumeSubheading}[4]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & \textit{\footnotesize{#4}} \\
+        \textit{\footnotesize{#3}} &  \footnotesize{#2}\\
+    \end{tabular*}
+    \vspace{-2.4mm}
+}
+
+\newcommand{\resumeProject}[4]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & \textit{\footnotesize{#3}} \\
+        \footnotesize{\textit{#2}} & \footnotesize{#4}
+    \end{tabular*}
+    \vspace{-2.4mm}
+}
+
+\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
+
+\renewcommand{\labelitemi}{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\renewcommand{\labelitemii}{$\vcenter{\hbox{\tiny$\circ$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*,labelsep=1mm]}
+\newcommand{\resumeHeadingSkillStart}{\begin{itemize}[leftmargin=*,itemsep=1.7mm, rightmargin=2ex]}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=*,labelsep=1mm,itemsep=0.5mm]}
+
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}\vspace{2mm}}
+\newcommand{\resumeHeadingSkillEnd}{\end{itemize}\vspace{-2mm}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-2mm}}
+\newcommand{\cvsection}[1]{%
+\vspace{2mm}
+\begin{tcolorbox}
+    \textbf{\large #1}
+\end{tcolorbox}
+    \vspace{-4mm}
+}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}%
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}%
+\newcolumntype{C}{>{\centering\arraybackslash}X}%
+
+% Commands for icon sizing and positioning
+\newcommand{\socialicon}[1]{\raisebox{-0.05em}{\resizebox{!}{1em}{#1}}}
+\newcommand{\ieeeicon}[1]{\raisebox{-0.3em}{\resizebox{!}{1.3em}{#1}}}
+
+% Font options
+\newcommand{\headerfonti}{\fontfamily{phv}\selectfont} % Helvetica-like (similar to Arial/Calibri)
+\newcommand{\headerfontii}{\fontfamily{ptm}\selectfont} % Times-like (similar to Times New Roman)
+\newcommand{\headerfontiii}{\fontfamily{ppl}\selectfont} % Palatino (elegant serif)
+\newcommand{\headerfontiv}{\fontfamily{pbk}\selectfont} % Bookman (readable serif)
+\newcommand{\headerfontv}{\fontfamily{pag}\selectfont} % Avant Garde-like (similar to Trebuchet MS)
+\newcommand{\headerfontvi}{\fontfamily{cmss}\selectfont} % Computer Modern Sans Serif
+\newcommand{\headerfontvii}{\fontfamily{qhv}\selectfont} % Quasi-Helvetica (another Arial/Calibri alternative)
+\newcommand{\headerfontviii}{\fontfamily{qpl}\selectfont} % Quasi-Palatino (another elegant serif option)
+\newcommand{\headerfontix}{\fontfamily{qtm}\selectfont} % Quasi-Times (another Times New Roman alternative)
+\newcommand{\headerfontx}{\fontfamily{bch}\selectfont} % Charter (clean serif font)
+
+% Define personal information
+\newcommand{\name}{LALIT} % Your Name
+\newcommand{\course}{Bachelor of Technology} % Your Course
+\newcommand{\roll}{XXXXXX} % Your Roll No.
+\newcommand{\phone}{9257788715} % Your Phone Number
+\newcommand{\emaila}{gujarlalit79@email.com} % Email 1
+\newcommand{\emailb}{gujarlalit79@gmail.com} % Email 2
+\newcommand{\github}{lalit999999} % Github
+\newcommand{\website}{https://www.lalitgurjar.in/} % Website
+\newcommand{\linkedin}{lalitgujar} % LinkedIn
+
+\begin{document}
+\fontfamily{cmr}\selectfont
+
+%----------HEADING-----------------
+
+\begin{tabularx}{\textwidth}{X r}
+{\Huge \textbf{\name}} &
+\faPhone* \ +91-\phone \\
+
+Bachelor of Technology &
+\href{mailto:\emailb}{\faEnvelope \ \emailb} \\
+
+Computer Science and Engineering &
+\href{https://www.linkedin.com/in/\linkedin}{\faLinkedin \ LinkedIn} \\
+
+National Institute of Technology Patna &
+\href{https://github.com/\github}{\faGithub \ GitHub} \\
+
+Patna, Bihar, India &
+\href{\website}{\faGlobe \ Portfolio} \\
+\end{tabularx}
+
+
+%-----------------EDUCATION-----------------------
+
+\section{\textbf{Education}}
+% p{7cm}
+% p{2.5cm}
+% p{2cm}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}X|>{\centering\arraybackslash}p{7cm}|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{2cm}|}
+  \hline
+  \textbf{Degree/Certificate} & \textbf{Institute/Board} & \textbf{CGPA} & \textbf{Year} \\
+  \hline
+  B.Tech+M.Tech & National Institute of Technology, Patna & 6.81 & 2024-29 \\ 
+  \hline
+  Senior Secondary & RBSE & 85.00 & 2023 \\
+  \hline
+  Secondary & RBSE & 
+  91.00 & 2021 \\
+  \hline
+\end{tabularx}
+\vspace{-4mm}
+
+% \section{\textbf{Experience}}
+% \vspace{-0.4mm}
+% \resumeSubHeadingListStart
+% \resumeSubheading
+%     {Company A [\href{https://www.companya.com}{\faIcon{globe}}]}{City, Country}
+%     {Job Title A}{Month Year - Month Year}
+%     \resumeItemListStart
+%       \item Developed [specific achievement] achieving [specific metric] in [specific area]
+%       \item Implemented [technology/method], enhancing [specific aspect] by [specific percentage]
+%       \item Conducted analysis on [specific data], identifying [key findings]
+%       \item Presented findings at [specific event], receiving [specific recognition]
+%     \resumeItemListEnd
+% \resumeSubheading
+%     {Company B [\href{https://www.companyb.com}{\faIcon{globe}}]}{Remote}
+%     {Job Title B}{Month Year - Month Year}
+%     \resumeItemListStart
+%       \item Engineered a [specific system/model], improving [specific metric] by [percentage]
+%       \item Developed [specific tool/method], increasing [specific aspect] by [percentage]
+%       \item Implemented [specific system], reducing [specific metric] by [percentage]
+%       \item Conducted [specific test/analysis] to validate [specific aspect]
+%     \resumeItemListEnd
+% \resumeSubHeadingListEnd
+% \vspace{-6mm}
+\section{\textbf{Projects}}
+\vspace{-0.4mm}
+\resumeSubHeadingListStart
+
+\resumeProject
+    {PollMan }
+    {Tech Stack: TypeScript, React, Node.js, Express.js, PostgreSQL, MongoDB, Socket.IO, JWT, Recharts}
+    {}
+    {{}[\href{https://github.com/lalit999999/miniyoutube_backend}{\textcolor{black}{\faGithub}} \ \href{https://pollman.onrender.com/}{\textcolor{black}{\faExternalLink*}}]}
+\resumeItemListStart
+    \item Architected a full-stack architecture integrated with Socket.IO to enable live, sub-second data synchronization and poll updates across concurrent user sessions.
+    \item Engineered dynamic analytics dashboards using Recharts visualizations and deployed a secure public sharing mechanism to track engagement metrics instantly.
+    \item Developed a production-ready, type-safe codebase (84.7\% TypeScript) featuring robust RESTful APIs, secure JWT authentication, and fully responsive UI components.
+\resumeItemListEnd
+
+\resumeProject
+    {ServiceHub – Local Service Marketplace }
+    {Tech Stack: React JS, Node.js, Express.js, MongoDB, Mongoose, JWT, Cloudinary}
+    {}
+    {{}[\href{https://github.com/lalit999999/service_provider_frontend}{\textcolor{black}{\faGithub}} \ \href{https://l-s-p.lalitgurjar.in/}{\textcolor{black}{\faExternalLink*}}]}
+\resumeItemListStart
+    \item Engineered a MERN-based marketplace architecture utilizing modular RESTful APIs to handle services, customer bookings, categories, and reviews.
+    \item Implemented secure JWT authentication paired with robust role-based authorization for strict Customer, Provider, and Admin access control.
+    \item Designed an automated state-machine booking lifecycle (Requested to Completed/Cancelled) using structured Mongoose schemas for scalable transaction management.
+    \item Integrated automated media pipelines using Multer and Cloudinary cloud storage for optimized user profile and service asset uploads.
+\resumeItemListEnd
+
+\resumeProject
+    { WDC Induction Platform}
+    {Tech Stack: Node.js, Express.js, MongoDB, JWT, Cloudinary}
+    {}
+    {{}[\href{https://github.com/lalit999999/wdc_redesign_frontend}{\textcolor{black}{\faGithub}} \ \href{https://wdc.lalitgurjar.in/}{\textcolor{black}{\faExternalLink*}}]}
+\resumeItemListStart
+    \item Digitized the organization’s high-volume induction workflow, replacing legacy manual tracking with a centralized admin and student portal.
+    \item Hardened platform security by enforcing rigid institutional email restrictions (@nitp.ac.in) alongside cryptographic JWT authorization layers.
+    \item Created a high-throughput, scalable CRUD API layer to efficiently dispatch user payloads, real-time announcements, and heavy file submissions.
+\resumeItemListEnd
+
+\resumeSubHeadingListEnd
+\vspace{-8mm}
+
+
+\section{\textbf{Skills}}
+
+\vspace{-0.4mm}
+\resumeHeadingSkillStart
+
+\resumeSubItem{Languages : }{C++, JavaScript, TypeScript SQL}
+\resumeSubItem{Frameworks : }{React.js, Next.js, Express.js, FastAPI}
+\resumeSubItem{Backend \& Infrastructure :}{Node.js ,REST api ,LLM API Integration (Anthropic,OpenAI), WebSockets,System Design }
+\resumeSubItem{Tools : }{Git, Linux, Postman}
+\resumeSubItem{Databases : }{MongoDB, PostgreSQL, Redis}
+\resumeSubItem{DevOps : }{Docker, GitHub Actions, CI/CD, Nginx, VPS Deployment}
+\resumeSubItem{Design/Other : }{Blender , Responsive Design}
+\resumeHeadingSkillEnd
+
+
+
+\section{\textbf{Certifications}}
+\vspace{-0.4mm}
+\resumeSubHeadingListStart
+\resumePOR
+    {Oracle} 
+    {, \href{www.Certification.com}{OCI AI Foundations Associate (2025)}} % Issuer
+    { Issued Sep 2025 } % Duration
+\resumePOR
+    {Amazon} 
+    {, \href{https://www.credly.com/badges/d30fe051-d896-46e7-bd43-3f0077d0fc43/public_url}{AWS Cloud Quest: Cloud Practitioner - Training Badge}} % Issuer
+    { Issued April 2026 } % Duration
+\resumeSubHeadingListEnd
+
+\vspace{-6mm}
+
+%-----------ACHIEVEMENTS-----------------
+% \section{\textbf{Achievements}}
+% \vspace{-0.2mm}
+% \resumeSubHeadingListStart
+% \resumePOR{}{\href{insert your achievement link here }{ Achievement 1 }}{}
+% \resumePOR{}{\href{insert your achievement link here }{ Achievement 2 }}{}
+% \resumePOR{}{\href{insert your achievement link here }{ Achievement 3 }}{}
+
+% \resumeSubHeadingListEnd
+% \vspace{-6mm}
+
+\section{\textbf{Positions of Responsibility}}
+\vspace{-0.4mm}
+\resumeSubHeadingListStart
+    \resumePOR{\href{https://www.linkedin.com/company/nitp-official-web-team/posts/?feedView=all}{ Full Stack Developer }, } % Position
+    {Web development cell , NITP} %Club,Event
+    {March 2026 - present} %Tenure Period
+
+   
+
+
+
+\resumeSubHeadingListEnd
+\vspace{-5mm}
+
+
+\end{document}
+
