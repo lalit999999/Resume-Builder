@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -18,8 +16,6 @@ model User {
   id        String   @id @default(cuid())
   clerkId   String   @unique
   email     String   @unique
-  name      String?
-  imageUrl  String?
   resumes   Resume[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -28,45 +24,27 @@ model User {
 // -------------------- TEMPLATE --------------------
 
 model Template {
-  id           String   @id @default(cuid())
-  name         String
-  slug         String   @unique
-  description  String?
-  previewImage String?
-  latexPath    String   // path to the .tex file in templates/
-  category     String?  // "Modern", "Academic", "Minimal", etc.
-  isPremium    Boolean  @default(false)
-  isActive     Boolean  @default(true)
-  resumes      Resume[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id         String   @id
+  name       String
+  texPath    String
+  configPath String
+  resumes    Resume[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
-// -------------------- RESUME (container) --------------------
-
-enum ResumeStatus {
-  DRAFT
-  GENERATED
-  ARCHIVED
-}
+// -------------------- RESUME --------------------
 
 model Resume {
-  id         String       @id @default(cuid())
+  id         String   @id @default(cuid())
   userId     String
-  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  templateId String
-  template   Template     @relation(fields: [templateId], references: [id])
-  title      String       @default("Untitled Resume")
-  status     ResumeStatus @default(DRAFT)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title      String
+  templateId String   @default("nitp")
+  template   Template @relation(fields: [templateId], references: [id])
+  data       Json
 
-  personalInfo   PersonalInfo?
-  educations     Education[]
-  experiences    Experience[]
-  projects       Project[]
-  skillGroups    SkillGroup[]
-  achievements   Achievement[]
-  certifications Certification[]
-  versions       ResumeVersion[]
+  versions ResumeVersion[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -74,124 +52,25 @@ model Resume {
   @@index([userId])
 }
 
-// -------------------- FORM SECTIONS --------------------
+// -------------------- RESUME VERSION --------------------
 
-model PersonalInfo {
-  id       String @id @default(cuid())
-  resumeId String @unique
-  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-
-  fullName String
-  email    String
-  phone    String?
-  location String?
-  linkedin String?
-  github   String?
-  website  String?
-  summary  String? @db.Text
+enum CompileStatus {
+  pending
+  success
+  failed
 }
-
-model Education {
-  id           String    @id @default(cuid())
-  resumeId     String
-  resume       Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  institution  String
-  degree       String
-  fieldOfStudy String?
-  location     String?
-  startDate    DateTime?
-  endDate      DateTime?
-  isCurrent    Boolean   @default(false)
-  gpa          String?
-  description  String?   @db.Text
-  order        Int       @default(0)
-
-  @@index([resumeId])
-}
-
-model Experience {
-  id           String    @id @default(cuid())
-  resumeId     String
-  resume       Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  company      String
-  role         String
-  location     String?
-  startDate    DateTime?
-  endDate      DateTime?
-  isCurrent    Boolean   @default(false)
-  bulletPoints String[]  // Postgres native text array
-  order        Int       @default(0)
-
-  @@index([resumeId])
-}
-
-model Project {
-  id           String    @id @default(cuid())
-  resumeId     String
-  resume       Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  title        String
-  description  String?   @db.Text
-  bulletPoints String[]
-  techStack    String[]
-  link         String?
-  githubUrl    String?
-  startDate    DateTime?
-  endDate      DateTime?
-  order        Int       @default(0)
-
-  @@index([resumeId])
-}
-
-model SkillGroup {
-  id       String   @id @default(cuid())
-  resumeId String
-  resume   Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  category String   // "Languages", "Frameworks", "Tools"
-  items    String[] // ["JavaScript", "Python", "Go"]
-  order    Int      @default(0)
-
-  @@index([resumeId])
-}
-
-model Achievement {
-  id          String    @id @default(cuid())
-  resumeId    String
-  resume      Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  title       String
-  description String?   @db.Text
-  date        DateTime?
-  order       Int       @default(0)
-
-  @@index([resumeId])
-}
-
-model Certification {
-  id            String    @id @default(cuid())
-  resumeId      String
-  resume        Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  name          String
-  issuer        String?
-  issueDate     DateTime?
-  expiryDate    DateTime?
-  credentialUrl String?
-  order         Int       @default(0)
-
-  @@index([resumeId])
-}
-
-// -------------------- VERSIONING / HISTORY --------------------
 
 model ResumeVersion {
-  id            String   @id @default(cuid())
-  resumeId      String
-  resume        Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  versionNumber Int
-  pdfUrl        String   // S3 / Cloudinary / Vercel Blob URL
-  fileSize      Int?
-  dataSnapshot  Json     // full snapshot of all sections at generation time
-  latexSource   String?  @db.Text // optional: store the compiled .tex too
-  generatedAt   DateTime @default(now())
+  id         String        @id @default(cuid())
+  resumeId   String
+  resume     Resume        @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  versionNum Int
+  data       Json
+  pdfUrl     String?
+  status     CompileStatus @default(pending)
+  errorLog   String?       @db.Text
+  createdAt  DateTime      @default(now())
 
-  @@unique([resumeId, versionNumber])
+  @@unique([resumeId, versionNum])
   @@index([resumeId])
 }
