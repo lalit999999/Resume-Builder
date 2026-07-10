@@ -13,12 +13,16 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { ResumeStatusBadge } from "@/components/dashboard/resume-status-badge"
 import type { ResumeVersion } from "@/types/resume"
 
 export function VersionHistoryDialog({ versions }: { versions: ResumeVersion[] }) {
-  function handleDownload(version: number) {
-    // TODO: wire to stored pdfUrl (Cloudinary) for this version
-    toast.success(`Downloading version ${version}`)
+  function handleDownload(version: ResumeVersion) {
+    if (!version.pdfUrl) {
+      toast.error(`Version ${version.version} isn't ready to download yet`)
+      return
+    }
+    window.open(version.pdfUrl, "_blank", "noopener,noreferrer")
   }
 
   return (
@@ -48,13 +52,13 @@ export function VersionHistoryDialog({ versions }: { versions: ResumeVersion[] }
                 <Badge variant="secondary">v{version.version}</Badge>
                 <div className="text-sm">
                   <p>{format(new Date(version.createdAt), "MMM d, yyyy 'at' h:mm a")}</p>
-                  <p className="text-xs text-muted-foreground">{version.fileSizeKb} KB</p>
+                  <ResumeStatusBadge status={version.status} />
                 </div>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => handleDownload(version.version)}
+                onClick={() => handleDownload(version)}
                 aria-label={`Download version ${version.version}`}
               >
                 <Download className="size-4" />

@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server"
 import { requireUser, UnauthenticatedError } from "@/lib/auth"
-import { getResumeHistoryForUser } from "@/lib/resume-queries"
+import { getActiveTemplates } from "@/lib/resume-queries"
 
 export async function GET() {
-  let user
   try {
-    user = await requireUser()
+    await requireUser()
   } catch (err) {
     if (err instanceof UnauthenticatedError) {
       return NextResponse.json({ error: "Unauthenticated" }, { status: 401 })
@@ -13,6 +12,6 @@ export async function GET() {
     throw err
   }
 
-  const history = await getResumeHistoryForUser(user.id)
-  return NextResponse.json(history)
+  const templates = await getActiveTemplates()
+  return NextResponse.json(templates)
 }

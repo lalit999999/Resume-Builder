@@ -97,14 +97,15 @@ export const emptyResumeData: ResumeData = {
 
 // ---- Whole-resume record shape used by the frontend (not persisted directly) ----
 
-export type ResumeStatus = "draft" | "compiled" | "failed"
+export type ResumeStatus = "draft" | "queued" | "processing" | "compiled" | "failed"
 
 export interface ResumeVersion {
   id: string
   version: number
   createdAt: string
-  pdfUrl: string
-  fileSizeKb: number
+  pdfUrl: string | null
+  status: ResumeStatus
+  fileSizeKb?: number
 }
 
 export interface ResumeRecord {
@@ -128,4 +129,5 @@ export interface ResumeSummary {
   updatedAt: string
   downloadCount: number
   thumbnailUrl?: string
+  pdfUrl?: string
 }

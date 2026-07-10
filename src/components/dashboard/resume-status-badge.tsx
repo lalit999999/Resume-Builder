@@ -4,6 +4,8 @@ import type { ResumeStatus } from "@/types/resume"
 const STATUS_MAP: Record<ResumeStatus, { label: string; variant: "default" | "secondary" | "destructive" }> = {
   compiled: { label: "Compiled", variant: "default" },
   draft: { label: "Draft", variant: "secondary" },
+  queued: { label: "Queued", variant: "secondary" },
+  processing: { label: "Compiling…", variant: "secondary" },
   failed: { label: "Failed", variant: "destructive" },
 }
 

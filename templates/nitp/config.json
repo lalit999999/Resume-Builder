@@ -1,5 +1,10 @@
 {
   "id": "nitp",
   "name": "NITP Classic",
+  "description": "Traditional single-column academic format with clean section headers.",
+  "category": "classic",
+  "tags": ["Classic", "ATS-Friendly"],
+  "thumbnailColor": "oklch(0.6 0.05 150)",
+  "popular": true,
   "sections": ["header", "education", "experience", "projects", "skills", "certifications", "positions"]
 }

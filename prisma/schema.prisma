@@ -24,13 +24,20 @@ model User {
 // -------------------- TEMPLATE --------------------
 
 model Template {
-  id         String   @id
-  name       String
-  texPath    String
-  configPath String
-  resumes    Resume[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id              String   @id
+  name            String
+  texPath         String
+  configPath      String
+  description     String?
+  previewImageUrl String?
+  category        String?
+  tags            String[] @default([])
+  thumbnailColor  String?
+  popular         Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  resumes         Resume[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 // -------------------- RESUME --------------------
@@ -46,8 +53,9 @@ model Resume {
 
   versions ResumeVersion[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@index([userId])
 }
@@ -55,21 +63,24 @@ model Resume {
 // -------------------- RESUME VERSION --------------------
 
 enum CompileStatus {
-  pending
-  success
+  queued
+  processing
+  completed
   failed
 }
 
 model ResumeVersion {
-  id         String        @id @default(cuid())
-  resumeId   String
-  resume     Resume        @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  versionNum Int
-  data       Json
-  pdfUrl     String?
-  status     CompileStatus @default(pending)
-  errorLog   String?       @db.Text
-  createdAt  DateTime      @default(now())
+  id                 String        @id @default(cuid())
+  resumeId           String
+  resume             Resume        @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  versionNum         Int
+  data               Json
+  pdfUrl             String?
+  cloudinaryPublicId String?
+  status             CompileStatus @default(queued)
+  errorLog           String?       @db.Text
+  createdAt          DateTime      @default(now())
+  deletedAt          DateTime?
 
   @@unique([resumeId, versionNum])
   @@index([resumeId])

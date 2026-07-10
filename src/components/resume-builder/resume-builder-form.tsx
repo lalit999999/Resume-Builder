@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm, FormProvider } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Loader2, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -27,7 +28,14 @@ import { PositionsSection } from "@/components/resume-builder/positions-section"
 import { ResumePreview } from "@/components/resume-builder/resume-preview"
 import { VersionHistoryDialog } from "@/components/resume-builder/version-history-dialog"
 import { AutosaveIndicator } from "@/components/resume-builder/autosave-indicator"
-import type { ResumeRecord } from "@/types/resume"
+import type { ResumeData, ResumeRecord } from "@/types/resume"
+import {
+  compileResume,
+  createResume,
+  getCompileStatus,
+  updateResume,
+} from "@/lib/api-client"
+import { queryKeys } from "@/lib/query-keys"
 
 const FORM_SECTIONS = [
   { value: "header", label: "Header", component: HeaderSection },
@@ -39,12 +47,41 @@ const FORM_SECTIONS = [
   { value: "positions", label: "Positions", component: PositionsSection },
 ] as const
 
+function toResumeData(values: ResumeFormValues): ResumeData {
+  return {
+    header: values.header,
+    education: values.education,
+    experience: values.experience,
+    projects: values.projects,
+    skills: values.skills,
+    certifications: values.certifications,
+    positions: values.positions,
+  }
+}
+
+const POLL_INTERVAL_MS = 1500
+const POLL_TIMEOUT_MS = 90_000
+
+async function pollCompileStatus(resumeId: string, jobId: string) {
+  const deadline = Date.now() + POLL_TIMEOUT_MS
+  while (Date.now() < deadline) {
+    const status = await getCompileStatus(resumeId, jobId)
+    if (status.status === "completed" || status.status === "failed") return status
+    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS))
+  }
+  throw new Error("Compile timed out")
+}
+
 export function ResumeBuilderForm({ resume }: { resume: ResumeRecord }) {
   const router = useRouter()
+  const queryClient = useQueryClient()
+  const [resumeId, setResumeId] = useState(resume.id)
   const [isCompiling, setIsCompiling] = useState(false)
   const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved">("idle")
   const [savedAt, setSavedAt] = useState<Date | null>(null)
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit")
+  const resumeIdRef = useRef(resumeId)
+  resumeIdRef.current = resumeId
 
   const form = useForm<ResumeFormValues>({
     resolver: zodResolver(resumeFormSchema),
@@ -65,31 +102,66 @@ export function ResumeBuilderForm({ resume }: { resume: ResumeRecord }) {
 
   useEffect(() => {
     if (!form.formState.isDirty) return
+    if (resumeIdRef.current === "new") return // nothing to autosave until the resume exists
+
     setAutosaveStatus("saving")
-    const timeout = setTimeout(() => {
-      // TODO: wire to PUT /api/resume/:id
-      setAutosaveStatus("saved")
-      setSavedAt(new Date())
+    const timeout = setTimeout(async () => {
+      try {
+        const values = form.getValues()
+        await updateResume(resumeIdRef.current, {
+          title: values.title,
+          templateId: values.templateId,
+          data: toResumeData(values),
+        })
+        setAutosaveStatus("saved")
+        setSavedAt(new Date())
+        queryClient.invalidateQueries({ queryKey: queryKeys.resumeHistory })
+        queryClient.invalidateQueries({ queryKey: queryKeys.resumes })
+      } catch {
+        setAutosaveStatus("idle")
+        toast.error("Autosave failed")
+      }
     }, 800)
     return () => clearTimeout(timeout)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(watchedValues)])
 
-  async function handleCompile() {
+  async function handleSubmit(values: ResumeFormValues) {
     setIsCompiling(true)
-    // TODO: wire to POST /api/resume/:id/compile
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsCompiling(false)
-    toast.success("Resume compiled successfully", {
-      description: "Your PDF is ready to download.",
-    })
-  }
+    try {
+      const data = toResumeData(values)
+      let id = resumeIdRef.current
 
-  function handleSubmit(values: ResumeFormValues) {
-    // TODO: wire to PUT /api/resume/:id then POST /api/resume/:id/compile
-    void values
-    void router
-    handleCompile()
+      if (id === "new") {
+        const created = await createResume({ title: values.title, templateId: values.templateId, data })
+        id = created.id
+        setResumeId(id)
+        resumeIdRef.current = id
+        router.replace(`/resumes/${id}/edit`)
+      } else {
+        await updateResume(id, { title: values.title, templateId: values.templateId, data })
+      }
+
+      const { jobId } = await compileResume(id)
+      const result = await pollCompileStatus(id, jobId)
+
+      queryClient.invalidateQueries({ queryKey: queryKeys.resumeHistory })
+      queryClient.invalidateQueries({ queryKey: queryKeys.resumes })
+
+      if (result.status === "completed") {
+        toast.success("Resume compiled successfully", {
+          description: "Your PDF is ready to download.",
+        })
+      } else {
+        toast.error("Resume failed to compile", {
+          description: result.errorLog ?? "Check your entries for issues and try again.",
+        })
+      }
+    } catch {
+      toast.error("Something went wrong generating your resume")
+    } finally {
+      setIsCompiling(false)
+    }
   }
 
   return (

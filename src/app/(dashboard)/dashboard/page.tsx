@@ -5,15 +5,17 @@ import { Button } from "@/components/ui/button"
 import { StatCard } from "@/components/dashboard/stat-card"
 import { ActivityChart } from "@/components/dashboard/activity-chart"
 import { RecentResumesTable } from "@/components/dashboard/recent-resumes-table"
-import {
-  mockActivity,
-  mockDashboardStats,
-  mockResumeSummaries,
-} from "@/lib/mock-data"
+import { requireUser } from "@/lib/auth"
+import { getResumeHistoryForUser } from "@/lib/resume-queries"
+import { computeActivity, computeDashboardStats, toResumeSummary } from "@/lib/resume-summary"
 
-export default function DashboardPage() {
-  // TODO: replace mock data with GET /api/resume/history + aggregated stats
-  const stats = mockDashboardStats
+export default async function DashboardPage() {
+  const user = await requireUser()
+  const history = await getResumeHistoryForUser(user.id)
+
+  const stats = computeDashboardStats(history)
+  const activity = computeActivity(history)
+  const recentResumes = history.slice(0, 5).map(toResumeSummary)
 
   return (
     <div className="flex flex-col gap-6">
@@ -63,11 +65,11 @@ export default function DashboardPage() {
         />
       </div>
 
-      <ActivityChart data={mockActivity} />
+      <ActivityChart data={activity} />
 
       <div className="flex flex-col gap-3">
         <h2 className="text-lg font-medium">Recent resumes</h2>
-        <RecentResumesTable resumes={mockResumeSummaries} />
+        <RecentResumesTable resumes={recentResumes} />
       </div>
     </div>
   )

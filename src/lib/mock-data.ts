@@ -195,8 +195,8 @@ export const mockResumeData: ResumeRecord = {
   updatedAt: "2026-07-08T09:24:00.000Z",
   downloadCount: 5,
   versions: [
-    { id: "ver_3", version: 3, createdAt: "2026-07-08T09:24:00.000Z", pdfUrl: "#", fileSizeKb: 182 },
-    { id: "ver_2", version: 2, createdAt: "2026-06-20T16:10:00.000Z", pdfUrl: "#", fileSizeKb: 176 },
-    { id: "ver_1", version: 1, createdAt: "2026-05-01T10:30:00.000Z", pdfUrl: "#", fileSizeKb: 164 },
+    { id: "ver_3", version: 3, createdAt: "2026-07-08T09:24:00.000Z", pdfUrl: "#", status: "compiled", fileSizeKb: 182 },
+    { id: "ver_2", version: 2, createdAt: "2026-06-20T16:10:00.000Z", pdfUrl: "#", status: "compiled", fileSizeKb: 176 },
+    { id: "ver_1", version: 1, createdAt: "2026-05-01T10:30:00.000Z", pdfUrl: "#", status: "compiled", fileSizeKb: 164 },
   ],
 }

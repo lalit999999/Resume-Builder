@@ -1,8 +1,20 @@
 import { TemplatesBrowser } from "./templates-browser"
-import { mockTemplates } from "@/lib/mock-data"
+import { getActiveTemplates } from "@/lib/resume-queries"
+import type { TemplateCategory, TemplateInfo } from "@/types/template"
 
-export default function TemplatesPage() {
-  // TODO: replace with GET /api/templates (or equivalent listing endpoint)
+export default async function TemplatesPage() {
+  const templates = await getActiveTemplates()
+
+  const templateInfos: TemplateInfo[] = templates.map((t) => ({
+    id: t.id,
+    name: t.name,
+    description: t.description ?? "",
+    category: (t.category ?? "modern") as TemplateCategory,
+    tags: t.tags,
+    thumbnailColor: t.thumbnailColor ?? "oklch(0.6 0.05 150)",
+    popular: t.popular,
+  }))
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -11,7 +23,7 @@ export default function TemplatesPage() {
           Choose a starting point for your next resume.
         </p>
       </div>
-      <TemplatesBrowser templates={mockTemplates} />
+      <TemplatesBrowser templates={templateInfos} />
     </div>
   )
 }

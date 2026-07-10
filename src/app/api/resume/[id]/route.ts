@@ -3,6 +3,7 @@ import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { requireUser, UnauthenticatedError } from "@/lib/auth"
 import { ResumeDataSchema } from "@/types/resume"
+import { invalidateResumeCaches } from "@/lib/resume-queries"
 
 const updateResumeSchema = z.object({
   title: z.string().min(1).optional(),
@@ -24,9 +25,13 @@ export async function GET(_request: Request, { params }: RouteParams) {
   }
 
   const { id } = await params
-  const resume = await prisma.resume.findUnique({ where: { id }, include: { versions: true } })
-  if (!resume) return NextResponse.json({ error: "Resume not found" }, { status: 404 })
-  if (resume.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  const resume = await prisma.resume.findUnique({
+    where: { id },
+    include: { versions: { where: { deletedAt: null } } },
+  })
+  if (!resume || resume.deletedAt || resume.userId !== user.id) {
+    return NextResponse.json({ error: "Resume not found" }, { status: 404 })
+  }
 
   return NextResponse.json(resume)
 }
@@ -44,8 +49,9 @@ export async function PUT(request: Request, { params }: RouteParams) {
 
   const { id } = await params
   const existing = await prisma.resume.findUnique({ where: { id } })
-  if (!existing) return NextResponse.json({ error: "Resume not found" }, { status: 404 })
-  if (existing.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  if (!existing || existing.deletedAt || existing.userId !== user.id) {
+    return NextResponse.json({ error: "Resume not found" }, { status: 404 })
+  }
 
   const body = await request.json()
   const parsed = updateResumeSchema.safeParse(body)
@@ -61,6 +67,8 @@ export async function PUT(request: Request, { params }: RouteParams) {
       data: parsed.data.data,
     },
   })
+
+  await invalidateResumeCaches(user.id)
 
   return NextResponse.json(resume)
 }
@@ -78,10 +86,17 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
 
   const { id } = await params
   const existing = await prisma.resume.findUnique({ where: { id } })
-  if (!existing) return NextResponse.json({ error: "Resume not found" }, { status: 404 })
-  if (existing.userId !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  if (!existing || existing.deletedAt || existing.userId !== user.id) {
+    return NextResponse.json({ error: "Resume not found" }, { status: 404 })
+  }
 
-  await prisma.resume.delete({ where: { id } })
+  const deletedAt = new Date()
+  await prisma.$transaction([
+    prisma.resume.update({ where: { id }, data: { deletedAt } }),
+    prisma.resumeVersion.updateMany({ where: { resumeId: id }, data: { deletedAt } }),
+  ])
+
+  await invalidateResumeCaches(user.id)
 
   return new NextResponse(null, { status: 204 })
 }
