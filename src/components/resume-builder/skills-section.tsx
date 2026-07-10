@@ -18,7 +18,7 @@ export function SkillsSection() {
   const { fields, append, remove } = useFieldArray({ control, name: "skills" })
 
   function addEntry() {
-    append({ id: crypto.randomUUID(), category: "", items: [] })
+    append({ category: "", items: [] })
   }
 
   if (fields.length === 0) {

@@ -17,27 +17,29 @@ import {
 } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { resumeFormSchema, type ResumeFormValues } from "@/lib/schemas/resume-schema"
-import { PersonalInfoSection } from "@/components/resume-builder/personal-info-section"
+import { HeaderSection } from "@/components/resume-builder/header-section"
 import { EducationSection } from "@/components/resume-builder/education-section"
 import { ExperienceSection } from "@/components/resume-builder/experience-section"
 import { ProjectsSection } from "@/components/resume-builder/projects-section"
 import { SkillsSection } from "@/components/resume-builder/skills-section"
-import { AchievementsSection } from "@/components/resume-builder/achievements-section"
+import { CertificationsSection } from "@/components/resume-builder/certifications-section"
+import { PositionsSection } from "@/components/resume-builder/positions-section"
 import { ResumePreview } from "@/components/resume-builder/resume-preview"
 import { VersionHistoryDialog } from "@/components/resume-builder/version-history-dialog"
 import { AutosaveIndicator } from "@/components/resume-builder/autosave-indicator"
-import type { ResumeData } from "@/types/resume"
+import type { ResumeRecord } from "@/types/resume"
 
 const FORM_SECTIONS = [
-  { value: "personal", label: "Personal", component: PersonalInfoSection },
+  { value: "header", label: "Header", component: HeaderSection },
   { value: "education", label: "Education", component: EducationSection },
   { value: "experience", label: "Experience", component: ExperienceSection },
   { value: "projects", label: "Projects", component: ProjectsSection },
   { value: "skills", label: "Skills", component: SkillsSection },
-  { value: "achievements", label: "Achievements", component: AchievementsSection },
+  { value: "certifications", label: "Certifications", component: CertificationsSection },
+  { value: "positions", label: "Positions", component: PositionsSection },
 ] as const
 
-export function ResumeBuilderForm({ resume }: { resume: ResumeData }) {
+export function ResumeBuilderForm({ resume }: { resume: ResumeRecord }) {
   const router = useRouter()
   const [isCompiling, setIsCompiling] = useState(false)
   const [autosaveStatus, setAutosaveStatus] = useState<"idle" | "saving" | "saved">("idle")
@@ -49,12 +51,13 @@ export function ResumeBuilderForm({ resume }: { resume: ResumeData }) {
     defaultValues: {
       title: resume.title,
       templateId: resume.templateId,
-      personalInfo: resume.personalInfo,
-      education: resume.education,
-      experience: resume.experience,
-      projects: resume.projects,
-      skills: resume.skills,
-      achievements: resume.achievements,
+      header: resume.data.header,
+      education: resume.data.education,
+      experience: resume.data.experience,
+      projects: resume.data.projects,
+      skills: resume.data.skills,
+      certifications: resume.data.certifications,
+      positions: resume.data.positions,
     },
   })
 
@@ -131,7 +134,7 @@ export function ResumeBuilderForm({ resume }: { resume: ResumeData }) {
 
         <div className="grid gap-6 lg:grid-cols-2">
           <div className={cn(mobileView === "preview" && "hidden", "lg:block")}>
-            <Tabs defaultValue="personal">
+            <Tabs defaultValue="header">
               <TabsList className="w-full flex-wrap">
                 {FORM_SECTIONS.map((section) => (
                   <TabsTrigger key={section.value} value={section.value}>

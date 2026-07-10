@@ -1,58 +1,83 @@
-export interface PersonalInfo {
-  fullName: string
-  email: string
-  phone: string
-  location: string
-  website?: string
-  linkedin?: string
-  github?: string
-  summary?: string
-}
+import { z } from "zod"
 
-export interface EducationEntry {
-  id: string
-  institution: string
-  degree: string
-  fieldOfStudy: string
-  startDate: string
-  endDate: string
-  gpa?: string
-  description?: string
-}
+// ---- Sections, matching templates/nitp/template.tex.njk field-for-field ----
 
-export interface ExperienceEntry {
-  id: string
-  company: string
-  role: string
-  location: string
-  startDate: string
-  endDate: string
-  current: boolean
-  bullets: string[]
-}
+export const headerSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  course: z.string().min(1, "Course is required"),
+  department: z.string().min(1, "Department is required"),
+  institute: z.string().min(1, "Institute is required"),
+  location: z.string().min(1, "Location is required"),
+  phone: z.string().min(1, "Phone is required"),
+  email: z.email("Enter a valid email"),
+  github: z.string().optional(),
+  linkedin: z.string().optional(),
+  website: z.url("Enter a valid URL").optional().or(z.literal("")),
+})
 
-export interface ProjectEntry {
-  id: string
-  name: string
-  description: string
-  technologies: string[]
-  link?: string
-  startDate?: string
-  endDate?: string
-}
+export const educationEntrySchema = z.object({
+  degree: z.string().min(1, "Degree is required"),
+  institute: z.string().min(1, "Institute is required"),
+  cgpa: z.string().min(1, "CGPA is required"),
+  year: z.string().min(1, "Year is required"),
+})
 
-export interface SkillGroup {
-  id: string
-  category: string
-  items: string[]
-}
+export const experienceEntrySchema = z.object({
+  company: z.string().min(1, "Company is required"),
+  companyLink: z.url("Enter a valid URL").optional().or(z.literal("")),
+  location: z.string().min(1, "Location is required"),
+  title: z.string().min(1, "Title is required"),
+  duration: z.string().min(1, "Duration is required"),
+  bullets: z.array(z.string().min(1, "Bullet cannot be empty")),
+})
 
-export interface AchievementEntry {
-  id: string
-  title: string
-  description?: string
-  date?: string
-}
+export const projectEntrySchema = z.object({
+  name: z.string().min(1, "Project name is required"),
+  techStack: z.string().min(1, "Tech stack is required"),
+  githubLink: z.url("Enter a valid URL").optional().or(z.literal("")),
+  demoLink: z.url("Enter a valid URL").optional().or(z.literal("")),
+  bullets: z.array(z.string().min(1, "Bullet cannot be empty")),
+})
+
+export const skillGroupSchema = z.object({
+  category: z.string().min(1, "Category is required"),
+  items: z.array(z.string().min(1)).min(1, "Add at least one skill"),
+})
+
+export const certificationEntrySchema = z.object({
+  issuer: z.string().min(1, "Issuer is required"),
+  title: z.string().min(1, "Title is required"),
+  link: z.url("Enter a valid URL").optional().or(z.literal("")),
+  date: z.string().min(1, "Date is required"),
+})
+
+export const positionEntrySchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  titleLink: z.url("Enter a valid URL").optional().or(z.literal("")),
+  organization: z.string().min(1, "Organization is required"),
+  duration: z.string().min(1, "Duration is required"),
+})
+
+export const ResumeDataSchema = z.object({
+  header: headerSchema,
+  education: z.array(educationEntrySchema).default([]),
+  experience: z.array(experienceEntrySchema).default([]),
+  projects: z.array(projectEntrySchema).default([]),
+  skills: z.array(skillGroupSchema).default([]),
+  certifications: z.array(certificationEntrySchema).default([]),
+  positions: z.array(positionEntrySchema).default([]),
+})
+
+export type Header = z.infer<typeof headerSchema>
+export type EducationEntry = z.infer<typeof educationEntrySchema>
+export type ExperienceEntry = z.infer<typeof experienceEntrySchema>
+export type ProjectEntry = z.infer<typeof projectEntrySchema>
+export type SkillGroup = z.infer<typeof skillGroupSchema>
+export type CertificationEntry = z.infer<typeof certificationEntrySchema>
+export type PositionEntry = z.infer<typeof positionEntrySchema>
+export type ResumeData = z.infer<typeof ResumeDataSchema>
+
+// ---- Whole-resume record shape used by the frontend (not persisted directly) ----
 
 export type ResumeStatus = "draft" | "compiled" | "failed"
 
@@ -64,17 +89,12 @@ export interface ResumeVersion {
   fileSizeKb: number
 }
 
-export interface ResumeData {
+export interface ResumeRecord {
   id: string
   title: string
   templateId: string
   status: ResumeStatus
-  personalInfo: PersonalInfo
-  education: EducationEntry[]
-  experience: ExperienceEntry[]
-  projects: ProjectEntry[]
-  skills: SkillGroup[]
-  achievements: AchievementEntry[]
+  data: ResumeData
   createdAt: string
   updatedAt: string
   downloadCount: number

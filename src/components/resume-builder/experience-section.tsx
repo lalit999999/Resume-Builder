@@ -1,10 +1,9 @@
 "use client"
 
-import { Controller, useFieldArray, useFormContext } from "react-hook-form"
+import { useFieldArray, useFormContext } from "react-hook-form"
 import { Plus, Trash2, Briefcase, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   Field,
   FieldError,
@@ -75,13 +74,11 @@ export function ExperienceSection() {
 
   function addEntry() {
     append({
-      id: crypto.randomUUID(),
       company: "",
-      role: "",
+      companyLink: "",
       location: "",
-      startDate: "",
-      endDate: "",
-      current: false,
+      title: "",
+      duration: "",
       bullets: [""],
     })
   }
@@ -113,40 +110,24 @@ export function ExperienceSection() {
               <Input {...register(`experience.${index}.company`)} />
               <FieldError errors={[errors.experience?.[index]?.company]} />
             </Field>
-            <Field data-invalid={!!errors.experience?.[index]?.role}>
-              <FieldLabel>Role</FieldLabel>
-              <Input {...register(`experience.${index}.role`)} />
-              <FieldError errors={[errors.experience?.[index]?.role]} />
+            <Field>
+              <FieldLabel>Company link (optional)</FieldLabel>
+              <Input placeholder="https://company.com" {...register(`experience.${index}.companyLink`)} />
+            </Field>
+            <Field data-invalid={!!errors.experience?.[index]?.title}>
+              <FieldLabel>Title</FieldLabel>
+              <Input {...register(`experience.${index}.title`)} />
+              <FieldError errors={[errors.experience?.[index]?.title]} />
             </Field>
             <Field data-invalid={!!errors.experience?.[index]?.location}>
               <FieldLabel>Location</FieldLabel>
               <Input {...register(`experience.${index}.location`)} />
               <FieldError errors={[errors.experience?.[index]?.location]} />
             </Field>
-            <Field orientation="horizontal">
-              <Controller
-                control={control}
-                name={`experience.${index}.current`}
-                render={({ field: checkboxField }) => (
-                  <Checkbox
-                    id={`current-${field.id}`}
-                    checked={checkboxField.value}
-                    onCheckedChange={(checked) => checkboxField.onChange(!!checked)}
-                  />
-                )}
-              />
-              <FieldLabel htmlFor={`current-${field.id}`} className="font-normal">
-                I currently work here
-              </FieldLabel>
-            </Field>
-            <Field data-invalid={!!errors.experience?.[index]?.startDate}>
-              <FieldLabel>Start date</FieldLabel>
-              <Input type="month" {...register(`experience.${index}.startDate`)} />
-              <FieldError errors={[errors.experience?.[index]?.startDate]} />
-            </Field>
-            <Field>
-              <FieldLabel>End date</FieldLabel>
-              <Input type="month" {...register(`experience.${index}.endDate`)} />
+            <Field data-invalid={!!errors.experience?.[index]?.duration}>
+              <FieldLabel>Duration</FieldLabel>
+              <Input placeholder="Month Year - Month Year" {...register(`experience.${index}.duration`)} />
+              <FieldError errors={[errors.experience?.[index]?.duration]} />
             </Field>
           </div>
 

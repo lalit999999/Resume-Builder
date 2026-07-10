@@ -1,10 +1,9 @@
 "use client"
 
-import { Controller, useFieldArray, useFormContext } from "react-hook-form"
-import { Plus, Trash2, FolderGit2 } from "lucide-react"
+import { useFieldArray, useFormContext } from "react-hook-form"
+import { Plus, Trash2, FolderGit2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Field,
   FieldError,
@@ -13,8 +12,54 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Empty, EmptyDescription, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
-import { TagInput } from "@/components/resume-builder/tag-input"
 import type { ResumeFormValues } from "@/lib/schemas/resume-schema"
+
+function ProjectBullets({ index }: { index: number }) {
+  const { register, watch, setValue } = useFormContext<ResumeFormValues>()
+  const bulletsPath = `projects.${index}.bullets` as const
+  const bullets = watch(bulletsPath) ?? []
+
+  function addBullet() {
+    setValue(bulletsPath, [...bullets, ""], { shouldDirty: true })
+  }
+
+  function removeBullet(bulletIndex: number) {
+    setValue(
+      bulletsPath,
+      bullets.filter((_, i) => i !== bulletIndex),
+      { shouldDirty: true }
+    )
+  }
+
+  return (
+    <Field>
+      <FieldLabel>Highlights</FieldLabel>
+      <div className="flex flex-col gap-2">
+        {bullets.map((_, bulletIndex) => (
+          <div key={bulletIndex} className="flex gap-2">
+            <Input
+              placeholder="Architected a full-stack feature that improved X by Y%"
+              {...register(`projects.${index}.bullets.${bulletIndex}`)}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => removeBullet(bulletIndex)}
+              aria-label="Remove bullet"
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+        ))}
+      </div>
+      <Button type="button" variant="outline" size="sm" className="w-fit" onClick={addBullet}>
+        <Plus />
+        Add bullet
+      </Button>
+    </Field>
+  )
+}
 
 export function ProjectsSection() {
   const {
@@ -26,13 +71,11 @@ export function ProjectsSection() {
 
   function addEntry() {
     append({
-      id: crypto.randomUUID(),
       name: "",
-      description: "",
-      technologies: [],
-      link: "",
-      startDate: "",
-      endDate: "",
+      techStack: "",
+      githubLink: "",
+      demoLink: "",
+      bullets: [""],
     })
   }
 
@@ -63,31 +106,23 @@ export function ProjectsSection() {
               <Input {...register(`projects.${index}.name`)} />
               <FieldError errors={[errors.projects?.[index]?.name]} />
             </Field>
+            <Field data-invalid={!!errors.projects?.[index]?.techStack}>
+              <FieldLabel>Tech stack</FieldLabel>
+              <Input placeholder="React, Node.js, PostgreSQL" {...register(`projects.${index}.techStack`)} />
+              <FieldError errors={[errors.projects?.[index]?.techStack]} />
+            </Field>
             <Field>
-              <FieldLabel>Link (optional)</FieldLabel>
-              <Input placeholder="github.com/you/project" {...register(`projects.${index}.link`)} />
+              <FieldLabel>GitHub link (optional)</FieldLabel>
+              <Input placeholder="https://github.com/you/project" {...register(`projects.${index}.githubLink`)} />
+            </Field>
+            <Field>
+              <FieldLabel>Demo link (optional)</FieldLabel>
+              <Input placeholder="https://project.example.com" {...register(`projects.${index}.demoLink`)} />
             </Field>
           </div>
-          <Field data-invalid={!!errors.projects?.[index]?.description}>
-            <FieldLabel>Description</FieldLabel>
-            <Textarea rows={2} {...register(`projects.${index}.description`)} />
-            <FieldError errors={[errors.projects?.[index]?.description]} />
-          </Field>
-          <Field>
-            <FieldLabel>Technologies</FieldLabel>
-            <Controller
-              control={control}
-              name={`projects.${index}.technologies`}
-              render={({ field: tagField }) => (
-                <TagInput
-                  value={tagField.value}
-                  onChange={tagField.onChange}
-                  placeholder="Type a technology and press Enter"
-                  aria-label="Technologies"
-                />
-              )}
-            />
-          </Field>
+
+          <ProjectBullets index={index} />
+
           <div className="flex justify-end pt-1">
             <Button
               type="button"

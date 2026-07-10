@@ -1,4 +1,4 @@
-import type { ResumeData, ResumeSummary } from "@/types/resume"
+import type { ResumeRecord, ResumeSummary } from "@/types/resume"
 import type { TemplateInfo } from "@/types/template"
 import type { ActivityPoint, DashboardStats, UserProfile } from "@/types/user"
 

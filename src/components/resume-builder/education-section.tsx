@@ -4,10 +4,8 @@ import { useFieldArray, useFormContext } from "react-hook-form"
 import { Plus, Trash2, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Field,
-  FieldContent,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -25,16 +23,7 @@ export function EducationSection() {
   const { fields, append, remove } = useFieldArray({ control, name: "education" })
 
   function addEntry() {
-    append({
-      id: crypto.randomUUID(),
-      institution: "",
-      degree: "",
-      fieldOfStudy: "",
-      startDate: "",
-      endDate: "",
-      gpa: "",
-      description: "",
-    })
+    append({ degree: "", institute: "", cgpa: "", year: "" })
   }
 
   if (fields.length === 0) {
@@ -44,7 +33,7 @@ export function EducationSection() {
           <GraduationCap className="size-6" />
         </EmptyMedia>
         <EmptyTitle>No education added</EmptyTitle>
-        <EmptyDescription>Add your degrees and certifications.</EmptyDescription>
+        <EmptyDescription>Add your degrees and certificates.</EmptyDescription>
         <Button size="sm" onClick={addEntry} className="mt-2">
           <Plus />
           Add education
@@ -59,42 +48,27 @@ export function EducationSection() {
         <div key={field.id}>
           {index > 0 && <FieldSeparator />}
           <div className="grid gap-4 @md/field-group:grid-cols-2">
-            <Field data-invalid={!!errors.education?.[index]?.institution}>
-              <FieldLabel>Institution</FieldLabel>
-              <Input {...register(`education.${index}.institution`)} />
-              <FieldError errors={[errors.education?.[index]?.institution]} />
-            </Field>
             <Field data-invalid={!!errors.education?.[index]?.degree}>
-              <FieldLabel>Degree</FieldLabel>
+              <FieldLabel>Degree/Certificate</FieldLabel>
               <Input placeholder="B.Tech" {...register(`education.${index}.degree`)} />
               <FieldError errors={[errors.education?.[index]?.degree]} />
             </Field>
-            <Field data-invalid={!!errors.education?.[index]?.fieldOfStudy}>
-              <FieldLabel>Field of study</FieldLabel>
-              <Input {...register(`education.${index}.fieldOfStudy`)} />
-              <FieldError errors={[errors.education?.[index]?.fieldOfStudy]} />
+            <Field data-invalid={!!errors.education?.[index]?.institute}>
+              <FieldLabel>Institute/Board</FieldLabel>
+              <Input {...register(`education.${index}.institute`)} />
+              <FieldError errors={[errors.education?.[index]?.institute]} />
             </Field>
-            <Field>
-              <FieldLabel>GPA (optional)</FieldLabel>
-              <Input {...register(`education.${index}.gpa`)} />
+            <Field data-invalid={!!errors.education?.[index]?.cgpa}>
+              <FieldLabel>CGPA</FieldLabel>
+              <Input {...register(`education.${index}.cgpa`)} />
+              <FieldError errors={[errors.education?.[index]?.cgpa]} />
             </Field>
-            <Field data-invalid={!!errors.education?.[index]?.startDate}>
-              <FieldLabel>Start date</FieldLabel>
-              <Input type="month" {...register(`education.${index}.startDate`)} />
-              <FieldError errors={[errors.education?.[index]?.startDate]} />
-            </Field>
-            <Field data-invalid={!!errors.education?.[index]?.endDate}>
-              <FieldLabel>End date</FieldLabel>
-              <Input type="month" {...register(`education.${index}.endDate`)} />
-              <FieldError errors={[errors.education?.[index]?.endDate]} />
+            <Field data-invalid={!!errors.education?.[index]?.year}>
+              <FieldLabel>Year</FieldLabel>
+              <Input placeholder="2024-29" {...register(`education.${index}.year`)} />
+              <FieldError errors={[errors.education?.[index]?.year]} />
             </Field>
           </div>
-          <Field>
-            <FieldLabel>Description (optional)</FieldLabel>
-            <FieldContent>
-              <Textarea rows={2} {...register(`education.${index}.description`)} />
-            </FieldContent>
-          </Field>
           <div className="flex justify-end pt-1">
             <Button
               type="button"
